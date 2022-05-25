@@ -15,7 +15,7 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-#werk
+
 class Custom_userView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
