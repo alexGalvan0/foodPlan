@@ -36,7 +36,10 @@ class Custom_userView(APIView):
 
 class MealView(APIView):
     def get(self, request):
-        mealItems = Meal.objects.all()
+
+        id = Custom_userView.get(self,request).data['id']
+        mealItems = Meal.objects.filter(user_id = id)
+
         serialzer = MealSerializer(mealItems,many=True)
         permision_classes = [permissions.IsAuthenticated,]
         token = request.COOKIES.get('jwt')
@@ -97,3 +100,7 @@ class LogoutView(APIView):
             'message':'success'
         }
         return response
+
+class DeleteMealItem(APIView):
+    def post(self, request):
+        pass
