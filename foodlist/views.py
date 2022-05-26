@@ -2,7 +2,7 @@
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 import datetime, jwt
-from rest_framework import viewsets, permissions,generics
+from rest_framework import permissions
 from rest_framework.views import APIView
 from .serializers import MealSerializer,Custom_userSerializer
 from .models import Meal, Custom_user
@@ -48,23 +48,22 @@ class MealView(APIView):
 class RegisterMealItem(APIView):
     def post (self, request):
         token = request.COOKIES.get('jwt')
-
         if not token:
             raise AuthenticationFailed('Unauthenticated')
 
         
         serializer = MealSerializer(data = self.request.data)
-        serializer.is_valid(raise_exception=True)
-        current_user = Custom_userView
-        print(serializer.validated_data)
+        serializer.is_valid(raise_exception=True) 
 
-        serializer.save()
+        id = Custom_userView.get(self,request).data['id']
+
+        serializer.save(user_id = id)
         return Response(serializer.data)
 
 class LoginView(APIView):
-    def post(self,requset):
-        email = requset.data['email']
-        password = requset.data['password']
+    def post(self,request):
+        email = request.data['email']
+        password = request.data['password']
 
         user = Custom_user.objects.filter(email=email).first()
 
