@@ -2,7 +2,7 @@
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 import datetime, jwt
-from rest_framework import viewsets, permissions,generics
+from rest_framework import permissions
 from rest_framework.views import APIView
 from .serializers import MealSerializer,Custom_userSerializer
 from .models import Meal, Custom_user
