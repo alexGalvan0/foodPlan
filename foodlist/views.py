@@ -90,6 +90,7 @@ class LoginView(APIView):
         response.data = {
             'jwt':token
         }
+
         return response
 
 class LogoutView(APIView):
