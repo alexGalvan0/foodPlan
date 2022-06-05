@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'foodlist',
     'corsheaders',
 ]
@@ -57,16 +58,23 @@ AUTH_USER_MODEL = 'foodlist.Custom_user'
 dependencies = [
     ('ook', '__first__'),
     ('eek', '0002_auto_20151029_1040'),
+    ('authtoken', '0002_custom_user_meal_delete_mealitems'),
 ]
 ROOT_URLCONF = 'foodPlan.urls'
-
+REST_USE_JWT = True
 REST_FRAMEWORK = {
-   'DEFAULT_AUTHENTICATION_CLASSES': (
-       'rest_framework.authentication.TokenAuthentication',
-   ),
-
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
 }
-
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies';
+JWT_AUTH = {
+    # Authorization:Token xxx
+    'JWT_AUTH_HEADER_PREFIX': 'Token',
+}
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
