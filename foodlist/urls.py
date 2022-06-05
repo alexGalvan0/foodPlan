@@ -7,13 +7,13 @@ from .views import (MealView,
                     Custom_userView,
                     LoginView,
                     LogoutView,
-                    RegisterView,
-                    DeleteMealItem)
+                    RegisterView)
+                    #DeleteMealItem)
 
 urlpatterns = [
     path('mealItems/',MealView.as_view()),
     path('add-meal/',RegisterMealItem.as_view()),
-    path('delete-meal/',DeleteMealItem.as_view()),
+    #path('delete-meal/',DeleteMealItem.as_view()),
     path('register',RegisterView.as_view()),
     path('login', LoginView.as_view()),
     path('user', Custom_userView.as_view()),
