@@ -1,4 +1,6 @@
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import AuthenticationFailed
 import datetime, jwt
 from rest_framework import permissions
@@ -8,14 +10,17 @@ from .models import Meal, Custom_user
 
 # Create your views here.
 class RegisterView(APIView):
+    
     def post(self, request):
-        permission_classes = (permissions.AllowAny,)
+        #permission_classes = (permissions.AllowAny,)
         serializer = Custom_userSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
 class Custom_userView(APIView):
+
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
@@ -34,6 +39,8 @@ class Custom_userView(APIView):
 
 
 class MealView(APIView):
+
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         mealItems = Meal.objects.all()
         serialzer = MealSerializer(mealItems,many=True)
@@ -45,6 +52,8 @@ class MealView(APIView):
         return Response (serialzer.data)
 
 class RegisterMealItem(APIView):
+
+    permission_classes = [IsAuthenticated]
     def post (self, request):
         token = request.COOKIES.get('jwt')
         if not token:
