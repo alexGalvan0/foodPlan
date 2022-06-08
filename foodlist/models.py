@@ -22,7 +22,7 @@ class Custom_user(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-            return self.name
+            return self.first_name
 
 class Meal(models.Model):
     

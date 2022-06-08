@@ -1,23 +1,103 @@
+
+import re
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-import datetime, jwt
+from rest_framework import status, permissions, viewsets
 from rest_framework import permissions
 from rest_framework.views import APIView
 from .serializers import MealSerializer,Custom_userSerializer
 from .models import Meal, Custom_user
+from rest_framework.filters import SearchFilter, OrderingFilter
 
-# Create your views here.
+from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.exceptions import InvalidToken
+from django_filters.rest_framework import DjangoFilterBackend
+
+class CookieTokenRefreshSerializer(TokenRefreshSerializer):
+    refresh = None
+    def validate(self, attrs):
+        attrs['refresh'] = self.context['request'].COOKIES.get('refresh_token')
+        if attrs['refresh']:
+            return super().validate(attrs)
+        else:
+            raise InvalidToken('No valid token found in cookie \'refresh_token\'')
+
+class CookieTokenObtainPairView(TokenObtainPairView):
+  def finalize_response(self, request, response, *args, **kwargs):
+    if response.data.get('refresh'):
+        cookie_max_age = 3600 * 24 * 14 # 14 days
+        response.set_cookie('access_token', response.data['access'], max_age=cookie_max_age, httponly=True )
+        del response.data['refresh']
+    return super().finalize_response(request, response, *args, **kwargs)
+
+class CookieTokenRefreshView(TokenRefreshView):
+    def finalize_response(self, request, response, *args, **kwargs):
+        if response.data.get('refresh'):
+            cookie_max_age = 3600 * 24 * 14 # 14 days
+            response.set_cookie('refresh_token', response.data['refresh'], max_age=cookie_max_age, httponly=True )
+            del response.data['refresh']
+        return super().finalize_response(request, response, *args, **kwargs)
+    serializer_class = CookieTokenRefreshSerializer
+
+
+
+# Views
 class RegisterView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    
     def post(self, request):
-        permission_classes = (permissions.AllowAny,)
         serializer = Custom_userSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
         return Response(serializer.data)
 
+
+class MealsViewSet(viewsets.ModelViewSet):
+    queryset = Meal.objects.all()
+    serializer_class = MealSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        query_set = queryset.filter(user=self.request.user)
+        return query_set
+
+   
+
+class RegisterMealItem(APIView):
+    def post (self, request):
+        
+        serializer = MealSerializer(data = self.request.data)
+        serializer.is_valid(raise_exception=True) 
+        id = request.user.id
+
+        serializer.save(user_id = id)
+        return Response(serializer.data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Create your views here.
+"""
+
 class Custom_userView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+
+        token = CookieTokenObtainPairView()
 
         if not token:
             raise AuthenticationFailed('Unauthenticated')
@@ -28,11 +108,12 @@ class Custom_userView(APIView):
         
         user = Custom_user.objects.filter(id=payload['id']).first()
         serializer = Custom_userSerializer(user)
+    
 
         return Response(serializer.data)
 
 
-
+CREATED
 class MealView(APIView):
     def get(self, request):
 
@@ -41,7 +122,7 @@ class MealView(APIView):
 
         serialzer = MealSerializer(mealItems,many=True)
         permision_classes = [permissions.IsAuthenticated,]
-        token = request.COOKIES.get('jwt')
+        token = CookieTokenObtainPairView().access
 
         if not token:
             raise AuthenticationFailed('Unauthenticated')
@@ -103,4 +184,4 @@ class LogoutView(APIView):
 
 class DeleteMealItem(APIView):
     def post(self, request):
-        pass
+        pass"""
