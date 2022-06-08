@@ -84,12 +84,6 @@ class RegisterMealItem(APIView):
 
 
 
-
-
-
-
-
-
 # Create your views here.
 """
 

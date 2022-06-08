@@ -23,7 +23,7 @@ urlpatterns = [
 
     path('register/',RegisterView.as_view(),name='create_user'),
     path('user/meals/', MealsViewSet.as_view({'get': 'list'}),name="get_user_meals"),
-    path('user/register/meal/',RegisterMealItem.as_view(),name='register_meals'),
+    path('register/meal/',RegisterMealItem.as_view(),name='register_meals'),
     
     path('user/login/', CookieTokenObtainPairView.as_view(), name='token_create'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
