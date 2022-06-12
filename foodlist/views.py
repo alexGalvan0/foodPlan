@@ -54,6 +54,20 @@ class RegisterView(APIView):
         return Response(serializer.data)
 
 
+#userInfoView
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = Custom_user.objects.all()
+    serializer_class = Custom_userSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        query_set = queryset.filter(id = self.request.user.id)
+        return query_set
+
+
+
+
+
 class MealsViewSet(viewsets.ModelViewSet):
     queryset = Meal.objects.all()
     serializer_class = MealSerializer
@@ -75,6 +89,23 @@ class RegisterMealItem(APIView):
         serializer.save(user_id = id)
         return Response(serializer.data)
 
+
+class DeleteMealView(APIView):
+    def post(self, request):
+        id = request.data
+        food = Meal.objects.filter(id=id['id']).delete()
+        print(food)
+        return Response(id)
+
+
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response()
+        response.delete_cookie('token')
+        response.data = {
+            'message':'success'
+        }
+        return response
 
 
 

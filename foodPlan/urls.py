@@ -9,6 +9,9 @@ from foodlist.views import( MealsViewSet,
                             RegisterView,
                             CookieTokenObtainPairView,
                              RegisterMealItem,
+                             LogoutView,
+                             DeleteMealView,
+                             UserViewSet
 
                             )
 router = routers.DefaultRouter()
@@ -24,6 +27,9 @@ urlpatterns = [
     path('register/',RegisterView.as_view(),name='create_user'),
     path('user/meals/', MealsViewSet.as_view({'get': 'list'}),name="get_user_meals"),
     path('register/meal/',RegisterMealItem.as_view(),name='register_meals'),
+    path('delete/meal/',DeleteMealView.as_view()),
+    path('logout/',LogoutView.as_view()),
+    path('user/',UserViewSet.as_view({'get': 'list'})),
     
     path('user/login/', CookieTokenObtainPairView.as_view(), name='token_create'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
