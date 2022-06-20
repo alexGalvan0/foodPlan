@@ -22,7 +22,7 @@ class Custom_user(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-            return self.name
+            return self.first_name
 
 class Meal(models.Model):
     
@@ -42,7 +42,7 @@ class Meal(models.Model):
                         (SATURDAY,'Saturday'),
                         (SUNDAY,'Sunday')]
 
-    name = models.CharField(max_length=255,null=True)
+    name = models.CharField(max_length=255,null=False)
     type = models.CharField(max_length=100,null=True)
     day = models.CharField(max_length=100,choices=days_in_the_week,default=MONDAY)
     created = models.DateTimeField(auto_now=True,null=True)
