@@ -7,7 +7,7 @@ class MealSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Meal
-        fields = ['name','type','day','created','user']
+        fields = ['name','type','day','created','user','id']
 
 class Custom_userSerializer(serializers.ModelSerializer):
     class Meta:
