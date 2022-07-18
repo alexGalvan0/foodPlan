@@ -1,5 +1,4 @@
 
-import re
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status, permissions, viewsets
